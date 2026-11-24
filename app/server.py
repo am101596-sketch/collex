@@ -303,14 +303,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send(200, (PAGE.parent / "assets" / "collex-companion.png").read_bytes(), "image/png")
             if path == "/assets/InterVariable.woff2":
                 return self.send(200, (PAGE.parent / "assets" / "InterVariable.woff2").read_bytes(), "font/woff2")
-            if path == "/upload":
-                hostname = urlsplit("http://" + self.headers.get("Host", "localhost")).hostname or "localhost"
-                if ":" in hostname:
-                    hostname = f"[{hostname}]"
-                self.send_response(303)
-                self.send_header("Location", f"http://{hostname}:{APPROVALS[1]}/upload")
-                self.end_headers()
-                return
+            if path == "/upload" or path.startswith("/upload/"):
+                return self.relay_upload("GET")
             if path == "/api/overview":
                 return self.send(200, overview())
             if path == "/api/pilot":
@@ -343,13 +337,36 @@ class Handler(BaseHTTPRequestHandler):
             return True
         return urlsplit(origin).netloc == (self.headers.get("Host") or "")
 
+    def relay_upload(self, method):
+        """Serve the approvals service's upload pages through this port."""
+        length = int(self.headers.get("Content-Length") or 0)
+        body = self.rfile.read(min(length, 50_000_000)) if method == "POST" else None
+        headers = {"Content-Type": self.headers["Content-Type"]} if self.headers.get("Content-Type") else {}
+        conn = http.client.HTTPConnection(*APPROVALS, timeout=900)
+        try:
+            conn.request(method, self.path, body=body, headers=headers)
+            res = conn.getresponse()
+            data = res.read()
+        except OSError as e:
+            return self.send(503, {"error": f"approvals service unreachable: {e}"})
+        finally:
+            conn.close()
+        if res.getheader("Location"):
+            self.send_response(res.status)
+            self.send_header("Location", res.getheader("Location"))
+            self.end_headers()
+            return
+        return self.send(res.status, data, res.getheader("Content-Type") or "text/html; charset=utf-8")
+
     def do_POST(self):
         path = urlsplit(self.path).path
+        if not self.same_origin():
+            return self.send(403, {"error": "cross-origin requests are refused"})
+        if path == "/api/upload" or path.startswith("/upload/"):
+            return self.relay_upload("POST")
         # JSON-only plus same-origin: a page elsewhere can't send a "simple" cross-site POST that approves an invoice.
         if (self.headers.get("Content-Type") or "").split(";")[0].strip().lower() != "application/json":
             return self.send(415, {"error": "send application/json"})
-        if not self.same_origin():
-            return self.send(403, {"error": "cross-origin requests are refused"})
         if path == "/api/agent/ask":
             length = max(0, min(int(self.headers.get("Content-Length") or 0), 65536))
             try:

@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: collex
+    runtime: python
+    plan: free
+    buildCommand: python triage/triage.py && python disputes/disputes.py
+    startCommand: (python channel/dashboard.py --host 127.0.0.1 --port 8092 &) && python app/server.py --host 0.0.0.0 --port $PORT --approvals-port 8092
+    healthCheckPath: /api/overview
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9

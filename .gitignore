@@ -12,3 +12,7 @@ data/uploads/
 !data/batches/role-b-20000/out/
 !data/batches/role-b-20000/out/queue.json
 !data/batches/role-b-20000/out/headline.json
+
+EXPLAIN.tmp.md
+QUESTIONS.md
+SUBMISSION.tmp.md
