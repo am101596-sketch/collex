@@ -287,7 +287,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Content-Security-Policy", "default-src 'none'; script-src 'unsafe-inline'; "
-                                                    "style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:")
+                                                    "style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; font-src 'self'")
         self.end_headers()
         self.wfile.write(data)
 
@@ -301,6 +301,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send(status, data, kind)
             if path == "/assets/collex-companion.png":
                 return self.send(200, (PAGE.parent / "assets" / "collex-companion.png").read_bytes(), "image/png")
+            if path == "/assets/InterVariable.woff2":
+                return self.send(200, (PAGE.parent / "assets" / "InterVariable.woff2").read_bytes(), "font/woff2")
             if path == "/upload":
                 hostname = urlsplit("http://" + self.headers.get("Host", "localhost")).hostname or "localhost"
                 if ":" in hostname:

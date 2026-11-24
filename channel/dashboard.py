@@ -41,11 +41,12 @@ ASK_EXAMPLES = ("Has INV-116288 been collected?", "Which customers say they alre
 _cache = {"mtime": None, "queue": None, "exposure": {}}
 
 CSS = """
-:root{color-scheme:light;--paper:#fafafa;--surface:#fff;--band:#fff;--line:#e2e2e5;--ink:#1d1d1f;--ink-muted:#6e6e73;
- --ledger:#0071e3;--ledger-soft:#f0f4f9;--on-ledger:#fff;--recovered:#38684f;--recovered-soft:#edf7f1;
- --writeoff:#775b27;--writeoff-soft:#f8f4ec;--dispute:#9b3d3f;--dispute-soft:#fbf1f0;
- --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
- --mono:ui-monospace,"SF Mono",Consolas,monospace;--r-sm:4px;--r-md:8px;--r-lg:14px;--ask-w:400px}
+@font-face{font-family:Inter;src:url('/assets/InterVariable.woff2') format('woff2');font-style:normal;font-weight:100 900;font-display:swap}
+:root{color-scheme:dark;--paper:#111214;--surface:#17181b;--band:#1c1d21;--line:#292a2f;--ink:#ededf0;--ink-muted:#a0a1aa;
+ --ledger:#a79cf4;--ledger-soft:#262238;--on-ledger:#101014;--recovered:#8cc6a3;--recovered-soft:#1d3025;
+ --writeoff:#e0b774;--writeoff-soft:#30291d;--dispute:#ee9b9d;--dispute-soft:#302123;
+ --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+ --mono:"SFMono-Regular",Consolas,monospace;--r-sm:4px;--r-md:5px;--r-lg:8px;--ask-w:360px}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font:14px/21px var(--sans);accent-color:var(--ledger);
  caret-color:var(--ledger);scrollbar-color:var(--line) transparent}
@@ -56,18 +57,18 @@ a{color:var(--ledger);text-underline-offset:3px}
 .muted,.sub{color:var(--ink-muted)}
 .sub{font-size:12px;line-height:17px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.top{display:flex;align-items:center;gap:24px;padding:0 32px;height:60px;border-bottom:1px solid var(--line);background:#1d1d1f}
+.top{display:flex;align-items:center;gap:24px;padding:0 32px;height:60px;border-bottom:1px solid var(--line);background:#0d0e10}
 .brand{font-weight:650;color:#fff;text-decoration:none;font-size:15px}
 .top nav{display:flex;gap:4px}
 .top nav a{color:#d2d2d7;text-decoration:none;padding:6px 10px;border-radius:var(--r-md)}
-.top nav a:hover{color:#fff;background:#343437}
-.top nav a[aria-current="page"]{color:#fff;font-weight:600;background:#343437}
+.top nav a:hover{color:#fff;background:#25262c}
+.top nav a[aria-current="page"]{color:#fff;font-weight:600;background:#25262c}
 .top .meta{margin-left:auto;font-size:12px;color:#d2d2d7;display:flex;gap:14px;align-items:center;white-space:nowrap}
 .local{display:inline-flex;align-items:center;gap:6px;color:#c2dacb;font-weight:600}
 .local svg{width:12px;height:12px}
 main{padding:24px 32px 64px;max-width:1480px;margin:0 auto;transition:margin-right 200ms ease-out}
 body.ask-open main{margin-right:calc(var(--ask-w) + 16px)}
-h1{margin:0;font-size:28px;line-height:34px;font-weight:650}
+h1{margin:0;font-size:24px;line-height:32px;font-weight:550;letter-spacing:-.03em}
 h2{margin:0 0 8px;font-size:14px;line-height:20px;font-weight:650}
 .lede{margin:0 0 20px}
 .lede p{margin:6px 0 0;max-width:80ch;color:var(--ink-muted)}
@@ -838,14 +839,14 @@ class Handler(BaseHTTPRequestHandler):
         return (self.headers.get("Host") or "localhost").rsplit(":", 1)[0]
 
     def send(self, body, code=200, kind="text/html; charset=utf-8"):
-        data = body.encode("utf-8")
+        data = body if isinstance(body, bytes) else body.encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", kind)
         self.send_header("Content-Length", str(len(data)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Content-Security-Policy", "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
-                                                    "connect-src 'self'; form-action 'self'; img-src 'self'")
+                                                    "connect-src 'self'; form-action 'self'; img-src 'self'; font-src 'self'")
         self.end_headers()
         self.wfile.write(data)
 
@@ -869,6 +870,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         url = urlparse(self.path)
         params = parse_qs(url.query)
+        if url.path == "/assets/InterVariable.woff2":
+            return self.send((ROOT / "app" / "assets" / "InterVariable.woff2").read_bytes(), kind="font/woff2")
         if url.path == "/":
             return self.send(index(params, self.host()))
         if url.path == "/crm":
