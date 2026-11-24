@@ -26,10 +26,16 @@ Collex gives that neglected work a dedicated workflow. It prepares routine small
 | Prepare follow-ups | Use a local model to draft a customer message, internal note, and mock Salesforce case. Validate fields and label template fallbacks. |
 | Work a missing-PO case | Track owner responses and check PO account, amount, expiry, and invoice coverage before preparing a corrected package. |
 | Review decisions | Inspect evidence, edit, approve, or reject. Tiny write-offs carry policy and aggregate account controls. |
+| Run a controlled pilot | Track an approved email, externally recorded delivery, customer replies, and allocated payment CSV evidence. Review measured time and draft errors separately for synthetic and real cohorts. |
 | Recheck changed facts | Withdraw outdated drafts after payment, changed balance/contact, disputes, or newer human touches. |
 | Ask about the work | Use companion chat with live desk context through OpenClaw in the configured sandbox; inspect recent activity. |
 
 **Human approval remains a boundary:** the demo records local decisions and mock CRM cases. It does not send customer emails, post a real accounting write-off, or prove payment was collected.
+
+The [controlled pilot workflow](docs/PILOT.md) adds an evidence ledger in the workspace's
+**Pilot** view. Operators record external delivery and payment evidence; Collex checks
+matching facts and reports reconciled amounts without claiming verified bank access or
+causal cash recovery.
 
 ## A reproducible 20,000-invoice world
 
@@ -145,6 +151,7 @@ python platform/preflight.py --no-model
 
 # Additional workspace ledger tests
 python app/test_ledger.py
+python app/test_pilot.py
 
 # Local model check and one real drafting cycle
 python platform/preflight.py

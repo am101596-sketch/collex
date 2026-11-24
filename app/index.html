@@ -83,6 +83,7 @@ main{max-width:1600px;padding:30px 28px 40px}.head{margin-bottom:24px}.head h1{f
 .ask-about-selection[hidden]{display:none}.ask-about-selection:hover{background:#ead9e3}
 @media(min-width:1200px){.companion-avatar{width:64px;height:64px}.companion-welcome{width:160px;height:160px}}
 @media(max-width:400px){.brand-companion{width:40px;height:40px}.companion-avatar{width:56px;height:56px}.companion-welcome{width:144px;height:144px}}
+.pilot-form{display:grid;gap:14px;margin-top:18px}.pilot-form label{display:grid;gap:5px;font-size:13px}.pilot-form input,.pilot-form select,.pilot-form textarea{width:100%;min-width:0;padding:9px;border:1px solid var(--line-2);border-radius:6px;background:var(--surface);font:inherit}.pilot-form textarea{min-height:100px}.pilot-form fieldset{border:1px solid var(--line);padding:14px}.pilot-metrics{display:flex;gap:18px;flex-wrap:wrap;margin:20px 0}.pilot-metrics p{margin:0}.pilot-evidence{white-space:pre-wrap;max-height:280px;overflow:auto;font-size:12px}.pilot-layout{display:grid;grid-template-columns:minmax(240px,.7fr) minmax(0,1.3fr);gap:24px}.pilot-layout summary{cursor:pointer;font-weight:600}.pilot-status{min-height:24px;color:var(--danger)}@media(max-width:900px){.pilot-layout{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -98,6 +99,7 @@ main{max-width:1600px;padding:30px 28px 40px}.head{margin-bottom:24px}.head h1{f
     <button class="navlink" data-view="cases"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span class="lbl">PO cases</span><span class="badge" id="b-cases"></span></button>
     <button class="navlink" data-view="disputes"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l9 16H3z"/><path d="M12 10v4M12 17v.01"/></svg><span class="lbl">Disputes</span><span class="badge" id="b-disputes"></span></button>
     <button class="navlink" data-view="writeoffs"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span class="lbl">Write-offs</span><span class="badge" id="b-writeoffs"></span></button>
+    <button class="navlink" data-view="pilot"><span class="lbl">Pilot</span></button>
     <div class="group">Data</div>
     <a class="navlink navout" id="upload-link" href="/upload"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg><span class="lbl">Upload export</span></a>
     </div>
@@ -162,7 +164,7 @@ function fromHash() {
   let h = "";
   try { h = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
   const [v, id] = h.split("/");
-  go(["today", "approvals", "accounts", "cases", "disputes", "writeoffs", "invoice"].includes(v) ? v : "today", id);
+  go(["today", "approvals", "accounts", "cases", "disputes", "writeoffs", "invoice", "pilot"].includes(v) ? v : "today", id);
 }
 
 /* ---------- sidebar ---------- */
@@ -195,6 +197,7 @@ async function render() {
     if (view === "writeoffs") return await listView(m, "Write-offs", "Balances under the write-off limit. Batches and large account totals wait for a controller.",
       "/api/writeoffs", writeoffRow, r => r.invoice_id);
     if (view === "invoice") return await invoiceOnly(m);
+    if (view === "pilot") return await pilotView(m);
   } catch (e) {
     m.innerHTML = `<div class="empty">Couldn't load this view: ${esc(e.message)}. Records may be updating. Reload this page to try again.</div>`;
   }
@@ -337,7 +340,7 @@ async function invoiceDetail(id) {
   else if (q.coordinate) box = `<div class="suggest hot"><div class="k">Go through the owner</div>${esc(q.coordinate.reason)}</div>`;
   else if (d.dispute) box = `<div class="suggest hot"><div class="k">Suggested action</div>${esc(d.dispute.resolution)}</div>`;
   else if (q.writeoff_controls) box = `<div class="suggest ${q.writeoff_controls.needs_controller ? "hot" : ""}"><div class="k">${q.writeoff_controls.needs_controller ? "Needs a controller" : "Write off"}</div>${esc((q.writeoff_controls.reasons || []).join("; "))}.</div>`;
-  else if (s.state) box = `<div class="suggest"><div class="k">Suggested action</div>Approve the reminder below; it goes out with the next send.</div>`;
+  else if (s.state) box = `<div class="suggest"><div class="k">Suggested action</div>Review the reminder below. Approval records your decision locally; record external delivery and payment evidence in Pilot.</div>`;
 
   const drafts = Object.entries(d.drafts || {}).map(([k, v]) => `<div class="section"><h3>${esc({customer_email: "Email to the customer", customer_slack: "Slack to the customer", internal_note: "Note to the account owner", writeoff_memo: "Write-off memo"}[k] || k)}</h3><div class="doc">${esc(v)}</div></div>`).join("");
   const casePart = d.case ? `<div class="section"><h3>PO case: ${esc(d.case.label)}</h3><ul class="timeline">${(d.case.history || []).map(h => `<li><span class="muted">${esc(h.at)}</span><span>${esc(h.detail)} <span class="muted" style="font-size:12px">${esc(h.source)}</span></span></li>`).join("")}</ul></div>`
@@ -377,6 +380,84 @@ async function decide(btn) {
     if (view !== "today") openDetail(id);
   } catch (e) { $("#toast").textContent = e.message; document.querySelectorAll("[data-decide]").forEach(b => b.disabled = false); }
 }
+
+/* ---------- controlled pilot ---------- */
+let pilotMode = "synthetic", pilotId = null;
+function pilotInput(label, name, type="text", value="", extra="") {
+  return `<label>${esc(label)}<input name="${name}" type="${type}" value="${esc(value)}" ${extra}></label>`;
+}
+function pilotMoney(cents, currency) { return `${(cents / 100).toFixed(2)} ${esc(currency)}`; }
+async function pilotView(m) {
+  const request = seq;
+  const data = await api("/api/pilot");
+  if (view !== "pilot" || request !== seq) return;
+  const rows = data.cases.filter(c => c.mode === pilotMode), metrics = data.metrics[pilotMode];
+  const c = rows.find(c => c.invoice_id === pilotId);
+  const person = pilotInput("Recorded by", "by", "text", reviewer(), 'required maxlength="100"');
+  const totals = Object.entries(metrics.money_by_currency).map(([currency,v]) => `<p><b>${pilotMoney(v.reconciled_cents,currency)}</b> reconciled of ${pilotMoney(v.opening_cents,currency)}</p>`).join("");
+  m.innerHTML = `<div class="head"><div><h1>Collections pilot</h1><p>Track one reviewed message per invoice, a customer response, and allocated payment evidence.</p></div><a class="btn" href="/api/pilot" download="collex-pilot.json">Export evidence</a></div>
+    <div class="toolbar"><label>Cohort <select id="pilot-mode"><option value="synthetic" ${pilotMode === "synthetic" ? "selected" : ""}>Synthetic rehearsal</option><option value="real" ${pilotMode === "real" ? "selected" : ""}>Real pilot</option></select></label><button class="btn" id="pilot-refresh">Refresh pilot</button></div>
+    <p class="data-note">${esc(data.notice)} ${pilotMode === "synthetic" ? "These are simulated outcomes, not recovered cash." : "Use only approved pilot records with real source evidence."}</p>
+    <div class="pilot-metrics" aria-label="Pilot results"><p><b>${metrics.enrolled}</b> enrolled · <b>${metrics.delivered}</b> delivered · <b>${metrics.responded}</b> responded · <b>${metrics.closed}</b> closed</p>${totals}
+    <p>${metrics.review_seconds}s review time</p><p>Draft error rate: ${metrics.error_rate === null ? "Not assessed" : `${(metrics.error_rate*100).toFixed(1)}% (${metrics.errors}/${metrics.assessed} assessed)`}</p>
+    <p>Baseline minus review: ${metrics.time_difference_seconds === null ? "No paired baseline" : `${metrics.time_difference_seconds}s across ${metrics.paired_baselines} paired cases`}</p></div>
+    <div class="pilot-layout"><div><details class="detail" ${rows.length ? "" : "open"}><summary>Enroll an approved draft</summary>
+      <p class="muted">First review and approve the email in Approvals. Record your measured review duration here. Enrollment pins the reviewed message's fingerprint and its measurements.</p>
+      <form class="pilot-form" data-pilot-op="enroll">${pilotInput("Invoice ID", "invoice_id", "text", "", 'required pattern="INV-[0-9]+" maxlength="80"')}${person}
+      ${pilotInput("Measured review time (seconds)", "review_seconds", "number", "", 'required min="1" max="86400" step="1"')}
+      ${pilotInput("Measured manual baseline for this case (optional seconds)", "baseline_seconds", "number", "", 'min="1" max="86400" step="1"')}
+      <label>Did the original draft contain an error?<select name="error_found"><option value="">Not assessed</option><option value="false">Assessed: no error</option><option value="true">Assessed: error found and corrected before approval</option></select></label>
+      <label>Error and correction (required if an error was found)<textarea name="error_note" maxlength="1000"></textarea></label>
+      <button class="btn primary">Enroll in ${pilotMode === "synthetic" ? "synthetic rehearsal" : "real pilot"}</button><p class="pilot-status" role="status"></p></form></details>
+      <div class="section"><h2>Cases</h2><div class="list">${rows.map(r => `<button class="row" data-pilot-id="${esc(r.invoice_id)}" aria-current="${c?.invoice_id === r.invoice_id}"><div><div class="who">${esc(r.invoice_id)}</div><div>${esc(r.account_name)}</div><div class="meta">${esc(r.stage.replaceAll("_"," "))} · ${pilotMoney(r.remaining_cents,r.currency)} remaining</div></div></button>`).join("") || '<p class="empty">No cases in this cohort yet.</p>'}</div></div></div>
+      <div class="detail">${c ? pilotCase(c,person) : '<h2>Follow a case</h2><p>Select a case to record delivery, add a response, and review payment evidence.</p>'}
+      <div class="section"><h2>Reconcile payment CSV</h2><p>Use an allocated bank or accounting export. Each row must identify one transaction and invoice. The entire batch is rejected if any row fails validation. Exact retries are ignored.</p>
+      <p class="muted">Required columns, in order:</p><pre class="pilot-evidence">transaction_id,invoice_id,account_id,currency,amount,received_at,evidence_ref</pre>
+      <p class="muted">Use timezone timestamps such as 2026-11-24T10:00:00-08:00. Payments must follow delivery; overpayments require manual allocation outside this pilot.</p>
+      <form class="pilot-form" data-pilot-op="reconcile">${person}<label>Payment export (up to 200 rows)<input type="file" name="payment_file" accept=".csv,text/csv" required></label><button class="btn primary">Validate and reconcile</button><p class="pilot-status" role="status"></p></form></div></div></div>`;
+}
+function pilotCase(c,person) {
+  const delivery = c.events.find(e => e.kind === "delivery");
+  const form = (kind,label,fields) => `<form class="pilot-form" data-pilot-op="event"><input type="hidden" name="invoice_id" value="${esc(c.invoice_id)}"><input type="hidden" name="kind" value="${kind}">${person}${pilotInput("Evidence reference (message ID or source record)","reference","text","",'required maxlength="200"')}${pilotInput("When it happened", "occurred_at", "datetime-local", "", 'required step="1"')}${fields}<label>${kind === "reply" ? "Customer reply" : "Delivery evidence note"}<textarea name="detail" required maxlength="4000"></textarea></label><button class="btn primary">${label}</button><p class="pilot-status" role="status"></p></form>`;
+  return `<h2>${esc(c.invoice_id)}</h2><p>${esc(c.account_name)} · ${esc(c.account_id)} · ${esc(c.stage.replaceAll("_"," "))}</p><p>${pilotMoney(c.paid_cents,c.currency)} reconciled; ${pilotMoney(c.remaining_cents,c.currency)} remaining.</p>
+    <p class="muted">Reviewed by ${esc(c.reviewer)} · ${c.review_seconds}s · action ${esc(c.action_id)}</p>
+    ${!delivery ? `<div class="section"><h3>Record external delivery</h3><p>Send the exact approved email using your authorized email system, then record its evidence here. Collex does not send it. Current invoice facts and the reviewed message are checked again.</p>${form("delivery","Record delivery",pilotInput("Recipient", "recipient","email",c.recipient,'required maxlength="254"'))}</div>` : `<details class="section"><summary>Record customer reply</summary>${form("reply","Record reply","")}</details>`}
+    <div class="section"><h3>Evidence timeline</h3>${c.events.map(e => `<details><summary>${esc(e.kind)} · ${esc(e.occurred_at)}</summary><p>${esc(e.reference)} · recorded by ${esc(e.recorded_by)}</p><pre class="pilot-evidence">${esc(e.detail)}</pre></details>`).join("") || '<p class="muted">Review recorded. No delivery evidence yet.</p>'}${c.payments.map(p => `<p>${pilotMoney(p.amount_cents,c.currency)} · ${esc(p.received_at)}<br>Transaction ${esc(p.transaction_id)} · evidence ${esc(p.evidence_ref)} · recorded by ${esc(p.recorded_by)}</p>`).join("")}</div>`;
+}
+document.addEventListener("submit", async e => {
+  const form = e.target.closest("[data-pilot-op]");
+  if (!form) return;
+  e.preventDefault();
+  const status = form.querySelector('[role="status"]'), btn = form.querySelector("button");
+  const body = Object.fromEntries(new FormData(form));
+  btn.disabled = true;
+  try {
+    if (form.dataset.pilotOp === "enroll") {
+      body.mode = pilotMode;
+      body.error_found = body.error_found === "" ? null : body.error_found === "true";
+    }
+    if (form.dataset.pilotOp === "event") body.occurred_at = new Date(body.occurred_at).toISOString();
+    if (form.dataset.pilotOp === "reconcile") {
+      body.mode = pilotMode;
+      if (body.payment_file.size > 60000) throw new Error("CSV must be 60 KB or smaller");
+      body.csv = await body.payment_file.text(); delete body.payment_file;
+    }
+    const result = await api("/api/pilot/" + form.dataset.pilotOp, body);
+    setReviewer(body.by);
+    if (body.invoice_id) pilotId = body.invoice_id.toUpperCase();
+    await pilotView($("#main"));
+    const target = document.querySelector(`[data-pilot-op="${form.dataset.pilotOp}"] [role="status"]`);
+    if (target) target.textContent = result.imported !== undefined ? `${result.imported} imported, ${result.duplicates} duplicates ignored.` : "Saved.";
+  } catch (err) { status.textContent = err.message; btn.disabled = false; }
+});
+document.addEventListener("click", e => {
+  const row = e.target.closest("[data-pilot-id]");
+  if (row) { pilotId = row.dataset.pilotId; pilotView($("#main")); }
+  if (e.target.closest("#pilot-refresh")) pilotView($("#main"));
+});
+document.addEventListener("change", e => {
+  if (e.target.id === "pilot-mode") { pilotMode = e.target.value; pilotId = null; pilotView($("#main")); }
+});
 
 /* ---------- the agent ---------- */
 function promptsView() {

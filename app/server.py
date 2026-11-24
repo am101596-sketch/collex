@@ -14,17 +14,28 @@ import sys
 from datetime import date
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from types import SimpleNamespace
 from urllib.parse import parse_qs, quote, unquote, urlencode, urlsplit
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from app import ask  # noqa: E402
+from app import ask, pilot  # noqa: E402
 
 PAGE = Path(__file__).resolve().parent / "index.html"
 OUT = ROOT / "out"
 APPROVALS = ("127.0.0.1", 8080)
 WORLD = ask.World()
 DRAFT_FILES = ("customer_email.md", "customer_slack.md", "internal_note.md", "writeoff_memo.md")
+
+
+def pilot_world():
+    """Read source files afresh before recording a reviewed or delivered message."""
+    invoices, notes, slack, as_of = ask.triage.load_sources(
+        ask.triage.pick_sources(ROOT / "data" / "inbox", ROOT / "data" / "exports"))
+    policy = ask.triage.load_policy(ROOT / "policy.yaml")
+    queue = ask.triage.triage(invoices, notes, slack, policy, as_of)
+    return SimpleNamespace(invoices=invoices, notes=notes, slack=slack,
+                           items={i["invoice_id"]: i for i in queue["items"]})
 
 
 def overview():
@@ -300,6 +311,8 @@ class Handler(BaseHTTPRequestHandler):
                 return
             if path == "/api/overview":
                 return self.send(200, overview())
+            if path == "/api/pilot":
+                return self.send(200, pilot.report())
             if path == "/api/ledger":
                 return self.send(200, ledger(parse_qs(urlsplit(self.path).query)))
             if path == "/api/drafts":
@@ -350,6 +363,19 @@ class Handler(BaseHTTPRequestHandler):
         if not isinstance(body, dict):
             return self.send(400, {"error": "send a JSON object"})
         try:
+            if path.startswith("/api/pilot/"):
+                try:
+                    if path == "/api/pilot/enroll":
+                        result = pilot.enroll(pilot_world(), body)
+                    elif path == "/api/pilot/event":
+                        result = pilot.record_event(pilot_world(), body)
+                    elif path == "/api/pilot/reconcile":
+                        result = pilot.reconcile(body)
+                    else:
+                        return self.send(404, {"error": "not found"})
+                    return self.send(200, result)
+                except (ValueError, FileNotFoundError) as e:
+                    return self.send(400, {"error": str(e)})
             if path == "/api/ask":
                 return self.send(200, ask.answer(WORLD, str(body.get("q") or "")[:500]))
             if path == "/api/decide":
