@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-10-25T22:00:06.494Z",
-  "title": "Design System: Collex",
+  "title": "Design System: Getting Rich",
   "extensions": {
     "colorMeta": {
       "paper": {
@@ -348,7 +348,7 @@
   ],
   "narrative": {
     "northStar": "Restrained invoice board",
-    "overview": "Collex combines the user's Apple-inspired restraint with the density and scanability of a stock-market board. Cool surfaces, graphite text and compact financial rows keep the invoice ledger central. This is an operational workspace with plain language and minimal decorative chrome.",
+    "overview": "Getting Rich combines the user's Apple-inspired restraint with the density and scanability of a stock-market board. Cool surfaces, graphite text and compact financial rows keep the invoice ledger central. This is an operational workspace with plain language and minimal decorative chrome.",
     "keyCharacteristics": [
       "Dense, aligned financial data.",
       "Quiet horizontal navigation and flat surfaces.",

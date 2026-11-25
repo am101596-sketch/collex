@@ -20,7 +20,7 @@ and choose **Pilot**. The agent desk is optional for this workflow.
 3. Select the case. For a real pilot, send the **exact reviewed email** through your
    authorized email system, then record its message ID/evidence reference, recipient,
    timestamp and delivery evidence note. For a rehearsal, record clearly labeled
-   simulated delivery evidence. Collex sends no email.
+   simulated delivery evidence. Getting Rich sends no email.
 4. Record the customer's reply with its source reference, timestamp and text. A reply is
    useful evidence but is optional: payment can arrive without a reply.
 5. Import an allocated payment CSV. Use the invoice's account ID and currency shown on
@@ -65,7 +65,7 @@ accounting system before importing.
 
 - **Reconciled amounts:** operator-supplied payment evidence matched to an enrolled
   invoice, summed separately per currency. A payment after outreach does not establish
-  that Collex caused it. Synthetic amounts never appear in the real cohort.
+  that Getting Rich caused it. Synthetic amounts never appear in the real cohort.
 - **Review seconds:** operator-measured elapsed review time for enrolled, approved
   drafts. This excludes drafting latency and subsequent operations.
 - **Draft error rate:** enrolled drafts assessed as containing an error divided by

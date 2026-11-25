@@ -1,6 +1,6 @@
 # README research and editorial decisions
 
-Reviewed October 25, 2026. These are presentation references, not validation of Collex's commercial claims. No project prose or code was copied.
+Reviewed October 25, 2026. These are presentation references, not validation of Getting Rich's commercial claims. No project prose or code was copied.
 
 | Project | Winner evidence | Presentation pattern used |
 |---|---|---|
@@ -11,7 +11,7 @@ Reviewed October 25, 2026. These are presentation references, not validation of 
 
 Awards do not prove README formatting caused a win. Current READMEs may include edits after judging.
 
-## Collex-specific decisions
+## Getting Rich-specific decisions
 
 - Lead with the neglected small-invoice workflow and the team's build-versus-buy hypothesis.
 - Link demo, setup, architecture, and evidence rather than burying them in role handoffs.

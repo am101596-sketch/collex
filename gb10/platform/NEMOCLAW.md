@@ -47,7 +47,7 @@ The box now serves the root build from GitHub main in `~/ft-hack-git`, with the 
 
 | Port | What | Started by |
 |---|---|---|
-| 8090 | Collex workspace, `app/server.py --port 8090 --approvals-port 8092`; it inlines the agent chat widget and passes `/api/agent/*` to 8091 | `@reboot` in `gb10/platform/crontab.team` |
+| 8090 | Getting Rich workspace, `app/server.py --port 8090 --approvals-port 8092`; it inlines the agent chat widget and passes `/api/agent/*` to 8091 | `@reboot` in `gb10/platform/crontab.team` |
 | 8091 | Agent desk, `channel/agent_desk.py` (same code as `gb10/channel/dashboard.py`): agent chat jobs, the JSON API the OpenClaw skill reads, the widget script | `@reboot` |
 | 8092 | Root approvals dashboard, `channel/dashboard.py --port 8092` (8080 belongs to the OpenShell gateway) | `@reboot` |
 

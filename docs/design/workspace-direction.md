@@ -5,7 +5,7 @@ Mode: Operate. Whole-workspace redesign, confirmed by the user. Build directly i
 ## Direction contract
 THESIS: An invoice board with the density and scanability of a stock-market board. The user rejected the earlier summary-led dashboard; the ledger is now the primary surface.
 
-OWN-WORLD: Collex replaces Greenbar at the user's request. The Apple reference supplies restrained chrome, cool gray and white surfaces, graphite text and system sans. The subsequent stock-market-board reference supplies compact rows, aligned tabular numbers, column sorting and semantic red/green. No invented price movement, pulsing decoration, large icon tiles or chart filler on the board. The subsequent user-requested cute plush character belongs only in the Ask panel.
+OWN-WORLD: Getting Rich replaces Greenbar at the user's request. The Apple reference supplies restrained chrome, cool gray and white surfaces, graphite text and system sans. The subsequent stock-market-board reference supplies compact rows, aligned tabular numbers, column sorting and semantic red/green. No invented price movement, pulsing decoration, large icon tiles or chart filler on the board. The subsequent user-requested cute plush character belongs only in the Ask panel.
 
 STORY: Scan all invoices, filter status or owner, search across the complete export, sort balances or age, page results, then open the invoice with its evidence and existing approval controls. Ask a question when needed.
 

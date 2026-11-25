@@ -451,7 +451,7 @@ def page(title, body, nav="", refresh=0):
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width, initial-scale=1">'
             f"<title>{esc(title)} · Collections</title>{meta}<style>{CSS}</style></head><body>"
-            f'<header class="top"><div class="wrap"><a class="brand" href="/"><img class="collex-face" src="/assets/collex-companion.png" alt="" width="48" height="48">Collex<small>approval desk</small></a>'
+            f'<header class="top"><div class="wrap"><a class="brand" href="/"><img class="collex-face" src="/assets/collex-companion.png" alt="" width="48" height="48">Getting Rich<small>approval desk</small></a>'
             f'<nav class="nav">{nav_html}</nav>'
             f'<label class="who">Reviewer <input id="reviewer" placeholder="Your name" autocomplete="name"></label>'
             f'</div></header><main class="wrap">{body}</main>{agent_panel()}<script>{JS}</script><script>{AGENT_PANEL_JS}</script></body></html>')
@@ -1245,9 +1245,9 @@ def agent_panel():
     chips = "".join(f'<button type="button" data-q="{esc(t)}">{esc(t)}</button>' for t in agent_suggestions())
     return (
         '<button class="agent-fab" id="agent-fab" type="button" aria-controls="agent-panel" aria-expanded="false">'
-        '<img class="collex-face" src="/assets/collex-companion.png" alt="" width="42" height="42">Ask Collex</button>'
+        '<img class="collex-face" src="/assets/collex-companion.png" alt="" width="42" height="42">Ask Getting Rich</button>'
         '<section class="agent-panel" id="agent-panel" aria-label="Ask the agent">'
-        '<div class="ap-head"><div class="t"><img class="collex-face" src="/assets/collex-companion.png" alt="" width="68" height="68">Collex<button class="x" id="agent-close" type="button" aria-label="Close">×</button></div>'
+        '<div class="ap-head"><div class="t"><img class="collex-face" src="/assets/collex-companion.png" alt="" width="68" height="68">Getting Rich<button class="x" id="agent-close" type="button" aria-label="Close">×</button></div>'
         f'<div class="n">OpenClaw in NemoClaw sandbox <b>{esc(AGENT_SANDBOX)}</b> · {esc(AGENT_MODEL)} on this GB10 · no cloud calls</div></div>'
         '<div class="ap-body" id="agent-body"></div>'
         f'<div class="ap-suggest" id="agent-suggest">{chips}</div>'

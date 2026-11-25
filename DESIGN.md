@@ -1,8 +1,8 @@
-# Collex workspace design
+# Getting Rich workspace design
 
 The visual reference is [Linear's product workspace](https://linear.app/): a near-black
 canvas, compact sidebar, thin dividers, restrained typography and violet accents.
-Collex retains its own identity, financial vocabulary, evidence and approval workflows.
+Getting Rich retains its own identity, financial vocabulary, evidence and approval workflows.
 
 ## Tokens
 
@@ -34,12 +34,12 @@ medium weight; avoid decorative headlines and large promotional cards in working
 
 - The 224px left sidebar groups portfolio, review and collection workflows. At
   intermediate widths it is 200px. Its footer shows actual snapshot metadata.
-- The 54px breadcrumb bar identifies the current view and exposes Ask Collex.
+- The 54px breadcrumb bar identifies the current view and exposes Ask Getting Rich.
 - The invoice board combines restrained totals, status tabs, search, owner filtering,
   and the complete export ledger. Headers stay visible during table scrolling.
 - Review and account views pair a scrollable list with evidence and details.
 - Pilot retains separate synthetic/real cohorts, measurements and evidence timelines.
-- Ask Collex opens on demand. Above 1600px it occupies a dedicated 360px column;
+- Ask Getting Rich opens on demand. Above 1600px it occupies a dedicated 360px column;
   otherwise it overlays the right side. The plush companion stays within the panel
   as a small identity element.
 - Below 760px, navigation is a collapsible drawer. Invoice identity stays pinned

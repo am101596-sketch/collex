@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: collex
+    name: getting-rich
     runtime: python
     plan: free
     buildCommand: python triage/triage.py && python disputes/disputes.py

@@ -2,7 +2,7 @@
 
 python channel/dashboard.py [--host 0.0.0.0] [--port 8080] [--queue out/queue.json]
 
-Standard library only, no external assets, so it keeps working with the uplink pulled. The Collex visual system
+Standard library only, no external assets, so it keeps working with the uplink pulled. The Getting Rich visual system
 is documented in DESIGN.md. The Ask sidebar answers from agent/ask.py with the local model.
 """
 import argparse
@@ -407,7 +407,7 @@ def page(title, body, active="queue", host="localhost", live=True, script=""):
     return f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(title)}</title><style>{CSS}</style></head>
 <body data-version="{esc(version()) if live else ''}">
-<header class="top"><a class="brand" href="/">Collex</a><nav aria-label="Main">{nav}</nav>
+<header class="top"><a class="brand" href="/">Getting Rich</a><nav aria-label="Main">{nav}</nav>
 <div class="meta">{''.join(meta)}<span class="local">{ICON_LOCAL}Running on this machine</span></div>
 <button class="btn" id="ask-toggle" aria-expanded="false" aria-controls="ask">Ask</button></header>
 <main>{body}</main>

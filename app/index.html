@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Collex | Collections</title>
+<title>Getting Rich | Collections</title>
 <style>
 @font-face { font-family: Inter; src: url('/assets/InterVariable.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; }
 :root {
@@ -302,9 +302,9 @@ aside.ask { position: fixed; top: 54px; bottom: 0; right: 0; z-index: 40; width:
 <a class="skip" href="#main">Skip to content</a>
 <div class="shell">
   <nav class="side" aria-label="Main" id="workspace-navigation">
-    <a class="brand" href="#today" aria-label="Collex home">
+    <a class="brand" href="#today" aria-label="Getting Rich home">
       <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M17 6.5a7 7 0 1 0 0 11M14.5 9a3.5 3.5 0 1 0 0 6"/><path d="M18 10v4"/></svg></span>
-      <div><b>Collex</b><span class="workspace-name">Collections workspace</span></div>
+      <div><b>Getting Rich</b><span class="workspace-name">Collections workspace</span></div>
     </a>
     <button class="workspace-search" id="workspace-search" aria-label="Search workspace"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg>Search<kbd>Ctrl K</kbd></button>
     <div class="navitems">
@@ -325,13 +325,13 @@ aside.ask { position: fixed; top: 54px; bottom: 0; right: 0; z-index: 40; width:
   <button class="nav-scrim" id="nav-scrim" aria-label="Close navigation"></button>
   <header class="workspace-bar">
     <div class="breadcrumbs"><button class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-controls="workspace-navigation" aria-expanded="false"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><span>Workspace</span><span class="divider" aria-hidden="true">/</span><strong id="crumb-title">All invoices</strong></div>
-    <div class="bar-actions"><span class="workspace-tag">Local workspace</span><button class="asktoggle" id="asktoggle" aria-expanded="false" aria-controls="ask"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/></svg>Ask Collex</button></div>
+    <div class="bar-actions"><span class="workspace-tag">Local workspace</span><button class="asktoggle" id="asktoggle" aria-expanded="false" aria-controls="ask"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/></svg>Ask Getting Rich</button></div>
   </header>
 
   <main id="main" tabindex="-1" aria-live="polite"></main>
 
-  <aside class="ask" id="ask" aria-label="Ask Collex" hidden>
-    <header><img class="companion-avatar" src="/assets/collex-companion.png" alt="" width="56" height="56"><div><b>Ask Collex</b><p>Find an invoice, check an approval, or follow a case.</p></div><button class="closeask" id="closeask" aria-label="Close records panel"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+  <aside class="ask" id="ask" aria-label="Ask Getting Rich" hidden>
+    <header><img class="companion-avatar" src="/assets/collex-companion.png" alt="" width="56" height="56"><div><b>Ask Getting Rich</b><p>Find an invoice, check an approval, or follow a case.</p></div><button class="closeask" id="closeask" aria-label="Close records panel"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
     <div class="thread" id="thread">
       <div class="prompts" id="prompts"></div>
     </div>
@@ -694,7 +694,7 @@ async function pilotView(m) {
   const c = rows.find(c => c.invoice_id === pilotId);
   const person = pilotInput("Recorded by", "by", "text", reviewer(), 'required maxlength="100"');
   const totals = Object.entries(metrics.money_by_currency).map(([currency,v]) => `<p><b>${pilotMoney(v.reconciled_cents,currency)}</b> reconciled of ${pilotMoney(v.opening_cents,currency)}</p>`).join("");
-  m.innerHTML = `<div class="head"><div><h1>Collections pilot</h1><p>Track one reviewed message per invoice, a customer response, and allocated payment evidence.</p></div><a class="btn" href="/api/pilot" download="collex-pilot.json">Export evidence</a></div>
+  m.innerHTML = `<div class="head"><div><h1>Collections pilot</h1><p>Track one reviewed message per invoice, a customer response, and allocated payment evidence.</p></div><a class="btn" href="/api/pilot" download="getting-rich-pilot.json">Export evidence</a></div>
     <div class="toolbar"><label>Cohort <select id="pilot-mode"><option value="synthetic" ${pilotMode === "synthetic" ? "selected" : ""}>Synthetic rehearsal</option><option value="real" ${pilotMode === "real" ? "selected" : ""}>Real pilot</option></select></label><button class="btn" id="pilot-refresh">Refresh pilot</button></div>
     <p class="data-note">${esc(data.notice)} ${pilotMode === "synthetic" ? "These are simulated outcomes, not recovered cash." : "Use only approved pilot records with real source evidence."}</p>
     <div class="pilot-metrics" aria-label="Pilot results"><p><b>${metrics.enrolled}</b> enrolled · <b>${metrics.delivered}</b> delivered · <b>${metrics.responded}</b> responded · <b>${metrics.closed}</b> closed</p>${totals}
@@ -720,7 +720,7 @@ function pilotCase(c,person) {
   const form = (kind,label,fields) => `<form class="pilot-form" data-pilot-op="event"><input type="hidden" name="invoice_id" value="${esc(c.invoice_id)}"><input type="hidden" name="kind" value="${kind}">${person}${pilotInput("Evidence reference (message ID or source record)","reference","text","",'required maxlength="200"')}${pilotInput("When it happened", "occurred_at", "datetime-local", "", 'required step="1"')}${fields}<label>${kind === "reply" ? "Customer reply" : "Delivery evidence note"}<textarea name="detail" required maxlength="4000"></textarea></label><button class="btn primary">${label}</button><p class="pilot-status" role="status"></p></form>`;
   return `<h2>${esc(c.invoice_id)}</h2><p>${esc(c.account_name)} · ${esc(c.account_id)} · ${esc(c.stage.replaceAll("_"," "))}</p><p>${pilotMoney(c.paid_cents,c.currency)} reconciled; ${pilotMoney(c.remaining_cents,c.currency)} remaining.</p>
     <p class="muted">Reviewed by ${esc(c.reviewer)} · ${c.review_seconds}s · action ${esc(c.action_id)}</p>
-    ${!delivery ? `<div class="section"><h3>Record external delivery</h3><p>Send the exact approved email using your authorized email system, then record its evidence here. Collex does not send it. Current invoice facts and the reviewed message are checked again.</p>${form("delivery","Record delivery",pilotInput("Recipient", "recipient","email",c.recipient,'required maxlength="254"'))}</div>` : `<details class="section"><summary>Record customer reply</summary>${form("reply","Record reply","")}</details>`}
+    ${!delivery ? `<div class="section"><h3>Record external delivery</h3><p>Send the exact approved email using your authorized email system, then record its evidence here. Getting Rich does not send it. Current invoice facts and the reviewed message are checked again.</p>${form("delivery","Record delivery",pilotInput("Recipient", "recipient","email",c.recipient,'required maxlength="254"'))}</div>` : `<details class="section"><summary>Record customer reply</summary>${form("reply","Record reply","")}</details>`}
     <div class="section"><h3>Evidence timeline</h3>${c.events.map(e => `<details><summary>${esc(e.kind)} · ${esc(e.occurred_at)}</summary><p>${esc(e.reference)} · recorded by ${esc(e.recorded_by)}</p><pre class="pilot-evidence">${esc(e.detail)}</pre></details>`).join("") || '<p class="muted">Review recorded. No delivery evidence yet.</p>'}${c.payments.map(p => `<p>${pilotMoney(p.amount_cents,c.currency)} · ${esc(p.received_at)}<br>Transaction ${esc(p.transaction_id)} · evidence ${esc(p.evidence_ref)} · recorded by ${esc(p.recorded_by)}</p>`).join("")}</div>`;
 }
 document.addEventListener("submit", async e => {
@@ -768,13 +768,13 @@ async function ask(q) {
   const t = $("#thread");
   t.insertAdjacentHTML("beforeend", `<div class="q">${esc(q)}</div>`);
   const wrap = document.createElement("div"); wrap.className = "msg";
-  const slot = document.createElement("div"); slot.className = "a"; slot.innerHTML = '<div class="who"><span class="agent-name"><img src="/assets/collex-companion.png" alt="" width="24" height="24">Collex</span></div><span class="loading" role="status">Checking your records…</span>';
+  const slot = document.createElement("div"); slot.className = "a"; slot.innerHTML = '<div class="who"><span class="agent-name"><img src="/assets/collex-companion.png" alt="" width="24" height="24">Getting Rich</span></div><span class="loading" role="status">Checking your records…</span>';
   wrap.appendChild(slot); t.appendChild(wrap); t.scrollTop = t.scrollHeight;
   try {
     const r = await api("/api/ask", {q});
-    slot.innerHTML = `<div class="who"><span class="agent-name"><img src="/assets/collex-companion.png" alt="" width="24" height="24">Collex</span> <span>${esc(r.ms)} ms &middot; snapshot ${esc(r.as_of)}</span></div><div class="txt">${linkInvoices(r.answer)}</div>
+    slot.innerHTML = `<div class="who"><span class="agent-name"><img src="/assets/collex-companion.png" alt="" width="24" height="24">Getting Rich</span> <span>${esc(r.ms)} ms &middot; snapshot ${esc(r.as_of)}</span></div><div class="txt">${linkInvoices(r.answer)}</div>
       ${r.steps.length ? `<details class="how"><summary>Sources and checks</summary><ol>${r.steps.map(s => `<li>${esc(s)}</li>`).join("")}</ol><div class="src">${r.sources.map(s => `<span>${esc(s)}</span>`).join("")}</div></details>` : ""}`;
-  } catch (e) { slot.innerHTML = `<div class="who"><span class="agent-name"><img src="/assets/collex-companion.png" alt="" width="24" height="24">Collex</span></div><div class="txt">I couldn't read the records just now (${esc(e.message)}). Try again in a moment.</div>`; }
+  } catch (e) { slot.innerHTML = `<div class="who"><span class="agent-name"><img src="/assets/collex-companion.png" alt="" width="24" height="24">Getting Rich</span></div><div class="txt">I couldn't read the records just now (${esc(e.message)}). Try again in a moment.</div>`; }
   t.scrollTop = t.scrollHeight;
 }
 

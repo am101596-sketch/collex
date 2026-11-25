@@ -1,8 +1,8 @@
-# Collex
+# Getting Rich
 
 ### Small invoices. Real work. Local AI.
 
-Collex works the small-balance collections backlog: find neglected invoices, prepare follow-ups, track payment blockers, and give collectors an evidence-backed decision to review. Inference stays on your machine.
+Getting Rich works the small-balance collections backlog: find neglected invoices, prepare follow-ups, track payment blockers, and give collectors an evidence-backed decision to review. Inference stays on your machine.
 
 Built for the [Dell x NVIDIA AI Hackathon, San Francisco](https://luma.com/builde-ixyz), targeting the **Dell Pro Max with GB10** and **NemoClaw, OpenClaw, and OpenShell**.
 
@@ -12,13 +12,13 @@ Built for the [Dell x NVIDIA AI Hackathon, San Francisco](https://luma.com/build
 
 A $40 invoice can require the same context gathering as a $40,000 invoice. Collections teams prioritize the larger balance. Smaller invoices accumulate while distributed collectors and onsite finance teams reconcile exports, notes, message history, and handoffs across time zones.
 
-Collex gives that neglected work a dedicated workflow. It prepares routine small-balance actions and routes exceptions to people, letting collectors spend their attention on larger balances and complex customer conversations.
+Getting Rich gives that neglected work a dedicated workflow. It prepares routine small-balance actions and routes exceptions to people, letting collectors spend their attention on larger balances and complex customer conversations.
 
 **Why buy instead of build?** Finance engineering can build collections tools, but higher-value projects compete for the same capacity. The commercial proposition is a locally deployed small-balance workflow with policy controls and review built in. This is the buyer hypothesis; the prototype does not establish customer adoption or measured cash recovery.
 
 ## What a collector can do
 
-| Workflow | What Collex does |
+| Workflow | What Getting Rich does |
 |---|---|
 | Import a portfolio | Upload thousands of invoice rows with optional notes and exported message history. Inspect each eligibility filter's results. |
 | Find neglected balances | Apply deterministic overdue, last-touch, and balance rules. The latest touch across sources wins. |
@@ -33,7 +33,7 @@ Collex gives that neglected work a dedicated workflow. It prepares routine small
 **Human approval remains a boundary:** the demo records local decisions and mock CRM cases. It does not send customer emails, post a real accounting write-off, or prove payment was collected.
 
 The [controlled pilot workflow](docs/PILOT.md) adds an evidence ledger in the workspace's
-**Pilot** view. Operators record external delivery and payment evidence; Collex checks
+**Pilot** view. Operators record external delivery and payment evidence; Getting Rich checks
 matching facts and reports reconciled amounts without claiming verified bank access or
 causal cash recovery.
 
@@ -67,7 +67,7 @@ flowchart TD
     Review --> State["Local files + SQLite mock CRM"]
     Upload --> Recheck["Revalidate previous drafts"]
     Recheck --> State
-    UI["Collex workspace"] --> Desk["Agent desk: live context + chat jobs"]
+    UI["Getting Rich workspace"] --> Desk["Agent desk: live context + chat jobs"]
     Desk --> Sandbox["OpenClaw in NemoClaw / OpenShell sandbox"]
     Sandbox --> Model["Local model server via configured bridge"]
 ```
